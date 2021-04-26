@@ -45,10 +45,16 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
 
     private static final Logger LOG = LoggerFactory.getLogger(SessionTrackerImpl.class);
 
+    /**
+     * zyx:用来管理会话的信息
+     */
     protected final ConcurrentHashMap<Long, SessionImpl> sessionsById = new ConcurrentHashMap<Long, SessionImpl>();
 
     private final ExpiryQueue<SessionImpl> sessionExpiryQueue;
 
+    /**
+     * zyx:用来管理会话的超时时间
+     */
     private final ConcurrentMap<Long, Integer> sessionsWithTimeout;
     private final AtomicLong nextSessionId = new AtomicLong();
 
@@ -96,6 +102,7 @@ public class SessionTrackerImpl extends ZooKeeperCriticalThread implements Sessi
      */
     public static long initializeNextSessionId(long id) {
         long nextSid;
+        //zyx:当前时间戳左移24位再右移8位
         nextSid = (Time.currentElapsedTime() << 24) >>> 8;
         nextSid = nextSid | (id << 56);
         if (nextSid == EphemeralType.CONTAINER_EPHEMERAL_OWNER) {
